@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System.IO;
+using UnityEngine.Networking;
 
 public class RoomManager : MonoBehaviour
 {
@@ -8,20 +11,19 @@ public class RoomManager : MonoBehaviour
     private SmoothCameraFollow cam;
     private GameObject player;
     static public int seed;
-    private List<GameObject> rooms;
-    private List<GameObject> previousRooms;
+    private List<RoomData> previousRooms = new List<RoomData>();
+    List<RoomData> roomPool = new List<RoomData>();
+    public List<RoomPrefabMapping> prefabMappings = new List<RoomPrefabMapping>();
+    [SerializeField] public GameObject baseRoomPrefab;
     void Start()
     {
-        rooms = new List<GameObject>();
-        previousRooms = new List<GameObject>();
         Random.InitState((int)System.DateTime.Now.Ticks);
         seed = (int)System.DateTime.Now.Ticks;
         currentRoom = GameObject.FindGameObjectWithTag("Room");
         cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SmoothCameraFollow>();
         player = GameObject.FindGameObjectWithTag("Player");
         
-        GameObject[] roomArray = Resources.LoadAll<GameObject>("Prefabs/Rooms");
-        rooms.AddRange(roomArray);
+        StartCoroutine(LoadAllRooms());
     }
     void OnEnable()
     {
@@ -47,17 +49,126 @@ public class RoomManager : MonoBehaviour
     public GameObject GetNextRoom()
     {
         // Choose a random room. If a room has been picked in the last 3 rooms, it cannot be picked.
-        int roomIndex = Random.Range(0, rooms.Count);
-        GameObject Room = rooms[roomIndex];
-        previousRooms.Add(rooms[roomIndex]);
-        rooms.Remove(rooms[roomIndex]);
+        int roomIndex = Random.Range(0, roomPool.Count);
+        RoomData roomMap = roomPool[roomIndex];
+        previousRooms.Add(roomPool[roomIndex]);
+        roomPool.Remove(roomPool[roomIndex]);
+        List<RoomObjectData> triggerList = new List<RoomObjectData>();
 
         if (previousRooms.Count > 2)
         {
-            rooms.Add(previousRooms[0]);
+            roomPool.Add(previousRooms[0]);
             previousRooms.Remove(previousRooms[0]);
+        }
+        GameObject Room = Instantiate(baseRoomPrefab);
+        if (roomMap.directional)
+        {
+            Room.GetComponent<RoomObject>().directional = true;
+        }
+        if (roomMap.random_flip)
+        {
+            Room.GetComponent<RoomObject>().randomFlip = true;
+        }
+        foreach(RoomObjectData roomObject in roomMap.objects)
+        {
+            if (roomObject.main_unlocker)
+            {
+                triggerList.Add(roomObject);
+            }
+            else
+            {
+                Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
+                GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
+                newObject.transform.position = objectVector;
+
+                newObject.name = roomObject.name;
+            }
+
+        }
+        if (triggerList.Count > 0)
+        {
+            foreach(RoomObjectData trigger in triggerList)
+            {
+                Vector2 objectVector = new Vector2(trigger.x, trigger.y);
+                GameObject newObject = Instantiate(GetPrefabByType(trigger.type), Room.transform);
+                newObject.transform.position = objectVector;
+                newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject);
+
+                newObject.GetComponent<UnlockerBehavior>().triggerableObject = newObject.transform.parent.Find(trigger.target).gameObject;
+                if (trigger.unlockers.Count > 0)
+                {
+                    foreach(string unlocker in trigger.unlockers)
+                    {
+                        newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject.transform.parent.Find(unlocker).gameObject);
+                    }
+                }
+            }
         }
         return Room;
     }
-    
+
+    public GameObject GetPrefabByType(string typeName)
+    {
+        foreach(RoomPrefabMapping mapping in prefabMappings)
+        {
+            if (mapping.key == typeName)
+            {
+                return mapping.prefab;
+            }
+        }
+        Debug.LogWarning($"Warning: No prefab mapped for key: [{typeName}]");
+        return null;
+    }
+    IEnumerator LoadAllRooms()
+    {
+        string indexPath = $"{Application.streamingAssetsPath}/Rooms/rooms_index.json";
+        
+        using (UnityWebRequest request = UnityWebRequest.Get(indexPath))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"Failed to load room index: {request.error}");
+                yield break;
+            }
+
+            string rawIndexText = request.downloadHandler.text;
+            
+            IndexData indexData = JsonUtility.FromJson<IndexData>(rawIndexText);
+            foreach (string fileName in indexData.filenames)
+            {
+                string roomPath = $"{Application.streamingAssetsPath}/Rooms/{fileName}";
+                
+                using (UnityWebRequest roomRequest = UnityWebRequest.Get(roomPath))
+                {
+                    yield return roomRequest.SendWebRequest();
+
+                    if (roomRequest.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.LogWarning($"Skipped room file '{fileName}': {roomRequest.error}");
+                        continue;
+                    }
+
+                    string rawRoomText = roomRequest.downloadHandler.text;
+                    RoomData roomData = JsonUtility.FromJson<RoomData>(rawRoomText);
+
+                    roomPool.Add(roomData);
+                }
+            }
+        }
+    }
+}
+
+[System.Serializable]
+public struct RoomPrefabMapping
+{
+    public string key;
+    public GameObject prefab;
+}
+
+[System.Serializable]
+public class IndexData
+{
+    public List<string> filenames;
 }

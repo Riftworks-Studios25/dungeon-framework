@@ -1155,6 +1155,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
+      propertyPath: baseRoomPrefab
+      value: 
+      objectReference: {fileID: 6206544769134570994, guid: b2922e90c0110f447bd41b82b8faab09, type: 3}
+    - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
+      propertyPath: prefabMappings.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
+      propertyPath: prefabMappings.Array.data[0].key
+      value: chest
+      objectReference: {fileID: 0}
+    - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
+      propertyPath: prefabMappings.Array.data[1].key
+      value: pressure_plate
+      objectReference: {fileID: 0}
+    - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
+      propertyPath: prefabMappings.Array.data[0].prefab
+      value: 
+      objectReference: {fileID: 5461818838412890191, guid: c87161b59c7444d448b96e8fcfb51eea, type: 3}
+    - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
+      propertyPath: prefabMappings.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 4025899872919396090, guid: 6a14a94caa93a7d439f437e68f55f4f5, type: 3}
     - target: {fileID: 6534946076558039854, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.47172

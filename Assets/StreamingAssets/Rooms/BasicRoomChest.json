@@ -1,0 +1,9 @@
+{
+    "room_name": "Basic Room Chest",
+    "directional": false,
+    "random_flip": false,
+    "objects": [
+        {"type": "chest", "name": "chest1","x": 0, "y": 0},
+        {"type": "pressure_plate", "name": "pressure_plate1", "x": 0, "y": -1.25, "main_unlocker": true, "unlockers": [], "target": "chest1"}
+    ]
+}

@@ -11,12 +11,12 @@ public class RoomTrigger : Trigger
     public override void Activate(GameObject parentRoom)
     {
         RoomManager roomManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<RoomManager>();
-        GameObject Room = roomManager.GetNextRoom();
+        GameObject nextRoom = roomManager.GetNextRoom();
 
         Vector2 pos = new Vector2(parentRoom.transform.position.x + nextX,
                                   parentRoom.transform.position.y + nextY);
 
-        GameObject nextRoom = Instantiate(Room, pos, Quaternion.identity);
+        nextRoom.transform.position = pos;
         nextRoom.GetComponent<RoomObject>().Initialize(parentRoom);
 
         roomManager.UpdateRoom(nextRoom);
