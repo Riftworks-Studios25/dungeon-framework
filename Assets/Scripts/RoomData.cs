@@ -7,6 +7,7 @@ public class RoomData
     public string room_name;
     public bool directional;
     public bool random_flip;
+    public bool random_rotate;
     public List<RoomObjectData> objects;
 }
 

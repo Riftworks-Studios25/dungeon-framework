@@ -1,6 +1,7 @@
 {
     "room_name": "Corner Chest",
     "random_flip": true,
+    "random_rotate": true,
     "objects": [
         {"type": "chest", "name": "chest1", "x": -5, "y": 6},
         {"type": "pressure_plate", "x": -5,"y": 3.5, "main_unlocker": true, "target": "chest1"},

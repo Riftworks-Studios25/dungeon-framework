@@ -4,12 +4,13 @@ public class RoomObject : MonoBehaviour
 {
     [SerializeField] public bool directional;
     [SerializeField] public bool randomFlip;
+    [SerializeField] public bool randomRotate;
     private bool flip;
 
     public void Initialize(GameObject previousRoom)
     {
-        // Room creation logic, rotation so that if the player can only enter a room from a certain side, it's rotated 
-        // or if the room can be randomly flipped 180 degrees it can be
+        // Room creation logic, rotation so that if the player can only enter a room from a certain side or has random rotation, it's rotated
+        // or if the room can be randomly flipped it can be
         if (directional)
         {
             float xDiff = previousRoom.transform.position.x - transform.position.x;
@@ -26,14 +27,26 @@ public class RoomObject : MonoBehaviour
             {
                 transform.eulerAngles = new Vector3(0, 0, 180);
             }
-            else if (yDiff < -1)
+        }
+        else if (randomRotate)
+        {
+            int rotate = Random.Range(0, 4);
+            if (rotate == 1)
             {
-                transform.eulerAngles = new Vector3(0, 0, 0);
+                transform.eulerAngles = new Vector3(0, 0, 90);
+            }
+            else if (rotate == 2)
+            {
+                transform.eulerAngles = new Vector3(0, 0, -90);
+            }
+            else if (rotate == 3)
+            {
+                transform.eulerAngles = new Vector3(0, 0, 180);
             }
         }
         if (randomFlip)
         {
-            flip = Random.Range(0, 2) == 0;
+            flip = Random.Range(0, 2) == 0; // '== 0' turns the int into a boolean
             if (flip)
             {
                 transform.localScale = new Vector3(-1, 1, 1);

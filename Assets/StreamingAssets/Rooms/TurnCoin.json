@@ -1,6 +1,7 @@
 {
     "room_name": "Turn Coin",
     "random_flip": true,
+    "random_rotate": true,
     "objects": [
         {"type": "vert_half_wall", "x": -1.5, "y": -4},
         {"type": "hor_half_wall", "x": 4, "y": 1.5},
