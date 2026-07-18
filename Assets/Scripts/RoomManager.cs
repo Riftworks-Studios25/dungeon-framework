@@ -80,6 +80,7 @@ public class RoomManager : MonoBehaviour
                 Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
                 GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
                 newObject.transform.position = objectVector;
+                newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
 
                 newObject.name = roomObject.name;
             }
@@ -92,6 +93,9 @@ public class RoomManager : MonoBehaviour
                 Vector2 objectVector = new Vector2(trigger.x, trigger.y);
                 GameObject newObject = Instantiate(GetPrefabByType(trigger.type), Room.transform);
                 newObject.transform.position = objectVector;
+                newObject.transform.rotation = Quaternion.Euler(0f, 0f, trigger.rotation);
+
+                newObject.name = trigger.name;
                 newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject);
 
                 newObject.GetComponent<UnlockerBehavior>().triggerableObject = newObject.transform.parent.Find(trigger.target).gameObject;

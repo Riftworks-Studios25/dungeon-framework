@@ -1,0 +1,12 @@
+{
+    "room_name": "Hall Coin",
+    "directional": true,
+    "objects": [
+        {"type": "vert_half_wall", "x": -1.5, "y": 4},
+        {"type": "vert_half_wall", "x": -1.5, "y": -4},
+        {"type": "vert_half_wall", "x": 1.5, "y": 4},
+        {"type": "vert_half_wall", "x": 1.5, "y": -4},
+        {"type": "coin", "x": -5},
+        {"type": "coin", "x": 5}
+    ]
+}

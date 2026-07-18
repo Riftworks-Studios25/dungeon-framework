@@ -1,0 +1,15 @@
+{
+    "room_name": "Basic Big Money",
+    "objects": [
+        {"type": "coin", "x": -6, "y": 6},
+        {"type": "coin", "y": 6},
+        {"type": "coin", "x": 6, "y": 6},
+        {"type": "coin", "x": -6, "y": -6},
+        {"type": "coin", "y": -6},
+        {"type": "coin", "x": 6, "y": -6},
+        {"type": "coin", "x": -6},
+        {"type": "coin", "x": 6},
+        {"type": "coin", "y": 3},
+        {"type": "coin", "y": -3}
+    ]
+}

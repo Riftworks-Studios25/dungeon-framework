@@ -20,4 +20,5 @@ public class RoomObjectData
     public bool main_unlocker;
     public List<string> unlockers;
     public string target;
+    public int rotation;
 }
