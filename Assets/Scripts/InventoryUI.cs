@@ -21,7 +21,7 @@ public class InventoryUI : MonoBehaviour
         for (int i = 0; i < playerInv.inventorySize; i++)
         {
             GameObject newSlot = Instantiate(slot, transform);
-            newSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(45 + 90 * i, -45);
+            newSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(90 + 180 * i, -90);
             slots.Add(newSlot.GetComponent<InventorySlot>());
             newSlot.GetComponent<InventorySlot>().slotNum = i;
         }
