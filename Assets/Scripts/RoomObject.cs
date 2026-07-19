@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Linq;
 
 public class RoomObject : MonoBehaviour
 {
@@ -11,39 +12,45 @@ public class RoomObject : MonoBehaviour
     {
         // Room creation logic, rotation so that if the player can only enter a room from a certain side or has random rotation, it's rotated
         // or if the room can be randomly flipped it can be
+        int rotateAmount = 0;
         if (directional)
         {
             float xDiff = previousRoom.transform.position.x - transform.position.x;
             float yDiff = previousRoom.transform.position.y - transform.position.y;
+
             if (xDiff > 1)
             {
-                transform.eulerAngles = new Vector3(0, 0, 90);
+                rotateAmount = 90;
             }
             else if (xDiff < -1)
             {
-                 transform.eulerAngles = new Vector3(0, 0, -90);
+                rotateAmount = -90;
             }
             if (yDiff > 1)
             {
-                transform.eulerAngles = new Vector3(0, 0, 180);
+                rotateAmount = 180;
             }
+            compensateRotation(rotateAmount);
         }
         else if (randomRotate)
         {
             int rotate = Random.Range(0, 4);
-            if (rotate == 1)
+            switch (rotate)
             {
-                transform.eulerAngles = new Vector3(0, 0, 90);
+                case 1:
+                    rotateAmount = 90;
+                    break;
+                case 2:
+                    rotateAmount = -90;
+                    break;
+                case 3:
+                    rotateAmount = 180;
+                    break;
             }
-            else if (rotate == 2)
-            {
-                transform.eulerAngles = new Vector3(0, 0, -90);
-            }
-            else if (rotate == 3)
-            {
-                transform.eulerAngles = new Vector3(0, 0, 180);
-            }
+            compensateRotation(rotateAmount);
         }
+        transform.eulerAngles = new Vector3(0, 0, rotateAmount);
+
         if (randomFlip)
         {
             flip = Random.Range(0, 2) == 0; // '== 0' turns the int into a boolean
@@ -67,7 +74,24 @@ public class RoomObject : MonoBehaviour
         if (flip)
         {
             TriggersObject.transform.localScale = new Vector3(-1, 1, 1);
+            compensateFlip();
         }
+        }
+    }
+
+    // Unrotate certain objects
+    void compensateRotation(int rotateAmount)
+    {
+        foreach(GameObject chest in GetComponentsInChildren<TriggerableChestBehavior>(true).Select(script => script.gameObject).ToArray())
+        {
+            chest.transform.rotation = Quaternion.Euler(0, 0, -rotateAmount);
+        }
+    }
+    void compensateFlip()
+    {
+        foreach(GameObject chest in GetComponentsInChildren<TriggerableChestBehavior>(true).Select(script => script.gameObject).ToArray())
+        {
+            chest.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 }
