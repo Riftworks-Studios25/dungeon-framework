@@ -901,6 +901,71 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1001 &1944570299
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -83.92535
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 41.140514
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2894714171115612752, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4695974523564724261, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+      propertyPath: m_Name
+      value: HallRoomDoor Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 5158472895624443379, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 940534264871624947, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 4386389912494475721, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 4748322103797074794, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 5885252041060709627, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 6481295600021626530, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 3038713352396972146, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    - {fileID: 5665624789467022840, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 87bcd63957e8ad84cbacdb94618e910c, type: 3}
 --- !u!1001 &263663908982070302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1464,3 +1529,4 @@ SceneRoots:
   - {fileID: 851755761}
   - {fileID: 7529098661424934375}
   - {fileID: 1609551954}
+  - {fileID: 1944570299}
