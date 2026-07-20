@@ -96,6 +96,7 @@ public class RoomManager : MonoBehaviour
                     GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
                     newObject.transform.position = objectVector;
                     newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
+                    newObject.transform.localScale = new Vector3(roomObject.scaleX, roomObject.scaleY, 1);
 
                     newObject.name = roomObject.name;
                 }
@@ -110,6 +111,7 @@ public class RoomManager : MonoBehaviour
                     GameObject newObject = Instantiate(GetPrefabByType(trigger.type), Room.transform);
                     newObject.transform.position = objectVector;
                     newObject.transform.rotation = Quaternion.Euler(0f, 0f, trigger.rotation);
+                    newObject.transform.localScale = new Vector3(trigger.scaleX, trigger.scaleY, 1);
 
                     newObject.name = trigger.name;
                     newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject);

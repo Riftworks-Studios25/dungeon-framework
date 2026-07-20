@@ -17,6 +17,8 @@ public class RoomObjectData
     public string type;
     public float x;
     public float y;
+    public float scaleX = 1.0f;
+    public float scaleY = 1.0f;
     public string name;
     public bool main_unlocker;
     public List<string> unlockers;
