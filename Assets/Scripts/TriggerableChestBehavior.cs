@@ -28,6 +28,10 @@ public class TriggerableChestBehavior : TriggerableBehavior
     {
         lootGenerator = FindAnyObjectByType<LootGenerator>();
         loot = lootGenerator.GetItem();
+        lootItem = Instantiate(loot, transform);
+        RectTransform rectTransform = lootItem.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = new Vector2(0, 0.2f);
+        lootItem.SetActive(false);
     }
 
     public override void Toggle()
@@ -40,7 +44,7 @@ public class TriggerableChestBehavior : TriggerableBehavior
             sr.sprite = openSprite;
             if (!inactive)
             {
-                lootItem = Instantiate(loot, transform);
+                lootItem.SetActive(true);
             }
         }
         else
@@ -52,7 +56,7 @@ public class TriggerableChestBehavior : TriggerableBehavior
             }
             if (!inactive)
             {
-                Destroy(lootItem);
+                lootItem.SetActive(false);
             }
         }
     }
