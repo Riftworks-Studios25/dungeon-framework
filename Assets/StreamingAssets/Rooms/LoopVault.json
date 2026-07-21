@@ -1,0 +1,29 @@
+{
+    "room_name": "Loop Vault",
+    "rarity": "rare",
+
+    "objects": [
+        {"type": "wall", "x": 5, "scale_y": 11},
+        {"type": "wall", "x": -5, "scale_y": 11},
+        {"type": "wall", "y": 5, "scale_x": 11},
+        {"type": "wall", "y": -5, "x": 3, "scale_x": 4},
+        {"type": "wall", "y": -5, "x": -3, "scale_x": 4},
+        {"type": "door", "name": "door1", "y": -5, "rotation": 180},
+        {"type": "pressure_plate", "y": -6.5, "main_unlocker": true, "target": "door1"},
+        
+        {"type": "coin", "y": -3},
+        {"type": "coin", "name": "coin1", "spawn_chance": 0.9, "x": 3, "y": 3},
+        {"type": "coin", "dependent": true, "target": "coin1",  "x": -3, "y": 3},
+        {"type": "chest", "name": "chest1", "y": 3},
+        {"type": "chest", "name": "chest2", "spawn_chance": 0.5, "x": 3, "y": -3},
+        {"type": "chest", "name": "chest3", "dependent": true, "target": "chest2", "x": -3, "y": -3},
+        {"type": "lever", "main_unlocker": true, "target": "chest1"},
+        {"type": "lever", "x": 3, "main_unlocker": true, "target": "chest2"},
+        {"type": "lever", "x": -3, "main_unlocker": true, "target": "chest3"},
+
+        {"type": "coin", "spawn_chance": 0.15, "x": 6.5, "y": 6.5},
+        {"type": "coin", "spawn_chance": 0.15, "x": -6.5, "y": 6.5},
+        {"type": "coin", "spawn_chance": 0.15, "x": 6.5, "y": -6.5},
+        {"type": "coin", "spawn_chance": 0.15, "x": -6.5, "y": -6.5}
+    ]
+}

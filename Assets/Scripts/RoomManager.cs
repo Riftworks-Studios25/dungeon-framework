@@ -261,6 +261,7 @@ public class RoomManager : MonoBehaviour
                             break;
                         default:
                             commonRooms.Add(roomData);
+                            Debug.LogWarning($"Warning: Invalid rarity '{roomData.rarity}' in room '{roomData.room_name}'");
                             break;
                     }
                 }

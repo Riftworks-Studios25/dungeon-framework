@@ -1,6 +1,7 @@
 {
     "room_name": "Basic",
     "objects": [
-        {"type": "coin", "spawnChance": 0.1}
+        {"type": "coin", "spawn_chance": 0.1},
+        {"type": "box", "spawn_chance": 0.2}
     ]
 }

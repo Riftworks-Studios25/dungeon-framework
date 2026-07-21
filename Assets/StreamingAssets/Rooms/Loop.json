@@ -1,0 +1,10 @@
+{
+    "room_name": "Loop",
+    "objects": [
+        {"type": "wall", "scale_x": 11, "scale_y": 11},
+        {"type": "coin", "spawn_chance": 0.15, "x": 6.5, "y": 6.5},
+        {"type": "coin", "spawn_chance": 0.15, "x": -6.5, "y": 6.5},
+        {"type": "coin", "spawn_chance": 0.15, "x": 6.5, "y": -6.5},
+        {"type": "coin", "spawn_chance": 0.15, "x": -6.5, "y": -6.5}
+    ]
+}
