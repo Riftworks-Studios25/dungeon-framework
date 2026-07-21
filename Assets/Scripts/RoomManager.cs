@@ -73,7 +73,18 @@ public class RoomManager : MonoBehaviour
         }
         else
         {
-            noRooms = true;
+            if (commonRooms.Count > 0)
+            {
+                roomMap = PickRoom(commonRooms);
+            }
+            else if (uncommonRooms.Count > 0)
+            {
+                roomMap = PickRoom(uncommonRooms);
+            }
+            else
+            {
+               noRooms = true; 
+            }
         }
         Debug.Log(roomChance);
 
@@ -116,15 +127,15 @@ public class RoomManager : MonoBehaviour
             Room.GetComponent<RoomObject>().rarity = roomMap.rarity;
             
             List<string> triggerableNames = new List<string>();
-            List<(GameObject, RoomObjectData)> instantiatedUnlockers = new List<(GameObject, RoomObjectData)>();
+            List<(GameObject, RoomObjectData)> instantiatedDependents = new List<(GameObject, RoomObjectData)>();
             // Add objects from JSON data
             foreach(RoomObjectData roomObject in roomMap.objects)
             {   
                 bool spawn = true;
-                if (roomObject.spawnChance < 1.0f && !roomObject.main_unlocker)
+                if (roomObject.spawn_chance < 1.0f && !roomObject.main_unlocker && !roomObject.dependent)
                 {
                     float objectChance = Random.Range(0f, 1f);
-                    if (objectChance >= roomObject.spawnChance)
+                    if (objectChance >= roomObject.spawn_chance)
                     {
                         spawn = false;
                     }
@@ -136,33 +147,40 @@ public class RoomManager : MonoBehaviour
                     GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
                     newObject.transform.position = objectVector;
                     newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
-                    newObject.transform.localScale = new Vector3(roomObject.scaleX, roomObject.scaleY, 1);
+                    newObject.transform.localScale = new Vector3(roomObject.scale_x, roomObject.scale_y, 1);
 
                     newObject.name = roomObject.name;
 
-                    if (roomObject.main_unlocker)
+                    if (roomObject.main_unlocker || roomObject.dependent)
                     {
-                        instantiatedUnlockers.Add((newObject, roomObject));
+                        instantiatedDependents.Add((newObject, roomObject));
                     }
                 }
 
             }
-            foreach(var (triggerObject, triggerData) in instantiatedUnlockers)
+            foreach(var (triggerObject, triggerData) in instantiatedDependents)
             {
-                UnlockerBehavior behavior = triggerObject.GetComponent<UnlockerBehavior>();
-                behavior.unlockerObjects.Add(triggerObject);
+                UnlockerBehavior behavior = null;
+                if (triggerObject.TryGetComponent<UnlockerBehavior>(out var bh))
+                {
+                    behavior = bh;
+                    behavior.unlockerObjects.Add(triggerObject);
+                }
 
                 Transform targetTransform = Room.transform.Find(triggerData.target);
                 if (targetTransform != null)
                 {
-                    behavior.triggerableObject = targetTransform.gameObject;
-
-                    foreach(string unlocker in triggerData.unlockers)
+                    if (behavior != null)
                     {
-                        Transform otherUnlocker = Room.transform.Find(unlocker);
-                        if (otherUnlocker != null)
+                        behavior.triggerableObject = targetTransform.gameObject;
+
+                        foreach(string unlocker in triggerData.unlockers)
                         {
-                            behavior.unlockerObjects.Add(otherUnlocker.gameObject);
+                            Transform otherUnlocker = Room.transform.Find(unlocker);
+                            if (otherUnlocker != null)
+                            {
+                                behavior.unlockerObjects.Add(otherUnlocker.gameObject);
+                            }
                         }
                     }
                 }

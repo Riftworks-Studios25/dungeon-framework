@@ -3,6 +3,6 @@
     "rarity": "uncommon",
     "objects": [
         {"type": "chest", "name": "chest1"},
-        {"type": "pressure_plate", "y": -1.25, "main_unlocker": true, "target": "chest1"}
+        {"type": "pressure_plate", "y": -1, "main_unlocker": true, "target": "chest1"}
     ]
 }

@@ -18,12 +18,13 @@ public class RoomObjectData
     public string type;
     public float x;
     public float y;
-    public float scaleX = 1.0f;
-    public float scaleY = 1.0f;
+    public float scale_x = 1.0f;
+    public float scale_y = 1.0f;
     public string name;
     public bool main_unlocker;
+    public bool dependent;
     public List<string> unlockers;
     public string target;
     public int rotation;
-    public float spawnChance = 1.0f;
+    public float spawn_chance = 1.0f;
 }

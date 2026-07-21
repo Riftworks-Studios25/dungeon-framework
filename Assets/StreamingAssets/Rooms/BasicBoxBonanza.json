@@ -4,6 +4,8 @@
     "directional": true,
     "objects": [
         {"type": "box"},
+        {"type": "box", "x": 1.5, "spawn_chance": 0.25},
+        {"type": "box", "x": -1.5, "spawn_chance": 0.25},
         {"type": "pressure_plate","x": -6, "main_unlocker": true, "target": "door1"},
         {"type": "pressure_plate","y": 6, "main_unlocker": true, "target": "door2"},
         {"type": "pressure_plate","x": 6, "main_unlocker": true, "target": "door3"},

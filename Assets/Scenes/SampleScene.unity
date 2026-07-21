@@ -957,6 +957,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4109762902803012807, guid: 574e52bbc1f533143915014a70720535, type: 3}
+      propertyPath: extraSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5079920150355972744, guid: 574e52bbc1f533143915014a70720535, type: 3}
       propertyPath: m_Name
       value: Sprite

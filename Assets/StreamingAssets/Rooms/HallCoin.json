@@ -2,8 +2,8 @@
     "room_name": "Hall Coin",
     "directional": true,
     "objects": [
-        {"type": "wall", "x": -1.5, "y": 0, "scaleY": 16},
-        {"type": "wall", "x": 1.5, "y": 0, "scaleY": 16},
+        {"type": "wall", "x": -1.5, "y": 0, "scale_y": 16},
+        {"type": "wall", "x": 1.5, "y": 0, "scale_y": 16},
         {"type": "coin", "x": -5},
         {"type": "coin", "x": 5}
     ]
