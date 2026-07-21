@@ -13,6 +13,9 @@ public class RoomManager : MonoBehaviour
     static public int seed;
     private List<RoomData> previousRooms = new List<RoomData>();
     List<RoomData> roomPool = new List<RoomData>();
+    List<RoomData> commonRooms = new List<RoomData>();
+    List<RoomData> uncommonRooms = new List<RoomData>();
+    List<RoomData> rareRooms = new List<RoomData>();
     List<RoomData> roomList = new List<RoomData>();
     public List<RoomPrefabMapping> prefabMappings = new List<RoomPrefabMapping>();
     [SerializeField] public GameObject baseRoomPrefab;
@@ -51,22 +54,51 @@ public class RoomManager : MonoBehaviour
     {
         // default to basic room if no rooms (fallback)
         GameObject Room = Instantiate(baseRoomPrefab);
-        // Choose a random room. If a room has been picked in the last 3 rooms, it cannot be picked
-        if (roomPool.Count > 0)
+
+        float roomChance = Random.Range(0f, 1f);
+        bool noRooms = false;
+        RoomData roomMap = null;
+
+        if (roomChance < 0.65f && commonRooms.Count > 0)
         {
-            int roomIndex = Random.Range(0, roomPool.Count);
-            RoomData roomMap = roomPool[roomIndex];
-            List<RoomObjectData> triggerList = new List<RoomObjectData>();
+            roomMap = PickRoom(commonRooms);
+        } 
+        else if (roomChance < 0.90f && uncommonRooms.Count > 0)
+        {
+            roomMap = PickRoom(uncommonRooms);
+        } 
+        else if (rareRooms.Count > 0)
+        {
+            roomMap = PickRoom(rareRooms);
+        }
+        else
+        {
+            noRooms = true;
+        }
+        Debug.Log(roomChance);
+
+        // Choose a random room. If a room has been picked in the last 3 rooms, it cannot be picked
+        if (roomList.Count > 0 && !noRooms)
+        {
 
             // Ban this room for the next 3 rooms, readd the third previous room to the pool
-            if (roomList.Count > 3)
-            {
-                previousRooms.Add(roomPool[roomIndex]);
-                roomPool.Remove(roomPool[roomIndex]);
-            }
             if (previousRooms.Count > 3)
             {
-                roomPool.Add(previousRooms[0]);
+                switch (previousRooms[0].rarity)
+                {
+                    case "common":
+                            commonRooms.Add(previousRooms[0]);
+                            break;
+                        case "uncommon":
+                            uncommonRooms.Add(previousRooms[0]);
+                            break;
+                        case "rare":
+                            rareRooms.Add(previousRooms[0]);
+                            break;
+                        default:
+                            commonRooms.Add(previousRooms[0]);
+                            break;
+                }
                 previousRooms.Remove(previousRooms[0]);
             }
             if (roomMap.directional)
@@ -81,16 +113,24 @@ public class RoomManager : MonoBehaviour
             {
                 Room.GetComponent<RoomObject>().randomRotate = true;
             }
-
+            Room.GetComponent<RoomObject>().rarity = roomMap.rarity;
+            
+            List<string> triggerableNames = new List<string>();
+            List<(GameObject, RoomObjectData)> instantiatedUnlockers = new List<(GameObject, RoomObjectData)>();
             // Add objects from JSON data
             foreach(RoomObjectData roomObject in roomMap.objects)
             {   
-                // Save unlockers for after their triggerables have been instantiated
-                if (roomObject.main_unlocker)
+                bool spawn = true;
+                if (roomObject.spawnChance < 1.0f && !roomObject.main_unlocker)
                 {
-                    triggerList.Add(roomObject);
+                    float objectChance = Random.Range(0f, 1f);
+                    if (objectChance >= roomObject.spawnChance)
+                    {
+                        spawn = false;
+                    }
                 }
-                else
+                
+                if (spawn)
                 {
                     Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
                     GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
@@ -99,31 +139,44 @@ public class RoomManager : MonoBehaviour
                     newObject.transform.localScale = new Vector3(roomObject.scaleX, roomObject.scaleY, 1);
 
                     newObject.name = roomObject.name;
+
+                    if (roomObject.main_unlocker)
+                    {
+                        instantiatedUnlockers.Add((newObject, roomObject));
+                    }
                 }
 
             }
-            // Instantiate unlockers now that their triggerables exist and can be mapped
-            if (triggerList.Count > 0)
+            foreach(var (triggerObject, triggerData) in instantiatedUnlockers)
             {
-                foreach(RoomObjectData trigger in triggerList)
+                UnlockerBehavior behavior = triggerObject.GetComponent<UnlockerBehavior>();
+                behavior.unlockerObjects.Add(triggerObject);
+
+                Transform targetTransform = Room.transform.Find(triggerData.target);
+                if (targetTransform != null)
                 {
-                    Vector2 objectVector = new Vector2(trigger.x, trigger.y);
-                    GameObject newObject = Instantiate(GetPrefabByType(trigger.type), Room.transform);
-                    newObject.transform.position = objectVector;
-                    newObject.transform.rotation = Quaternion.Euler(0f, 0f, trigger.rotation);
-                    newObject.transform.localScale = new Vector3(trigger.scaleX, trigger.scaleY, 1);
+                    behavior.triggerableObject = targetTransform.gameObject;
 
-                    newObject.name = trigger.name;
-                    newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject);
-
-                    newObject.GetComponent<UnlockerBehavior>().triggerableObject = newObject.transform.parent.Find(trigger.target).gameObject;
-                    if (trigger.unlockers.Count > 0)
+                    foreach(string unlocker in triggerData.unlockers)
                     {
-                        foreach(string unlocker in trigger.unlockers)
+                        Transform otherUnlocker = Room.transform.Find(unlocker);
+                        if (otherUnlocker != null)
                         {
-                            newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject.transform.parent.Find(unlocker).gameObject);
+                            behavior.unlockerObjects.Add(otherUnlocker.gameObject);
                         }
                     }
+                }
+                else
+                {
+                    foreach(string unlocker in triggerData.unlockers)
+                    {
+                        Transform otherUnlocker = Room.transform.Find(unlocker);
+                        if (otherUnlocker != null)
+                        {
+                            Destroy(otherUnlocker.gameObject);
+                        }
+                    }
+                    Destroy(triggerObject);
                 }
             }
         }
@@ -176,11 +229,36 @@ public class RoomManager : MonoBehaviour
                     string rawRoomText = roomRequest.downloadHandler.text;
                     RoomData roomData = JsonUtility.FromJson<RoomData>(rawRoomText);
 
-                    roomPool.Add(roomData);
                     roomList.Add(roomData);
+                    switch (roomData.rarity)
+                    {
+                        case "common":
+                            commonRooms.Add(roomData);
+                            break;
+                        case "uncommon":
+                            uncommonRooms.Add(roomData);
+                            break;
+                        case "rare":
+                            rareRooms.Add(roomData);
+                            break;
+                        default:
+                            commonRooms.Add(roomData);
+                            break;
+                    }
                 }
             }
         }
+    }
+    public RoomData PickRoom(List<RoomData> rooms)
+    {
+        int roomIndex = Random.Range(0, rooms.Count);
+        RoomData roomMap = rooms[roomIndex];
+        if (roomList.Count > 3)
+        {
+            previousRooms.Add(rooms[roomIndex]);
+            rooms.Remove(rooms[roomIndex]);
+        }
+        return roomMap;
     }
 }
 

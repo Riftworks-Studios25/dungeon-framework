@@ -1,5 +1,6 @@
 {
     "room_name": "Hall Chest",
+    "rarity": "rare",
     "directional": true,
     "objects": [
         {"type": "wall", "x": -1.5, "y": 4.5, "scaleY": 7},

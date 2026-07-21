@@ -6,6 +6,7 @@ public class RoomObject : MonoBehaviour
     [SerializeField] public bool directional;
     [SerializeField] public bool randomFlip;
     [SerializeField] public bool randomRotate;
+    [SerializeField] public string rarity;
     private bool flip;
 
     public void Initialize(GameObject previousRoom)

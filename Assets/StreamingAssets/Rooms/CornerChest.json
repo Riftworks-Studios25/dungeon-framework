@@ -1,5 +1,6 @@
 {
     "room_name": "Corner Chest",
+    "rarity": "uncommon",
     "random_flip": true,
     "random_rotate": true,
     "objects": [

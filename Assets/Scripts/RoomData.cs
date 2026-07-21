@@ -8,6 +8,7 @@ public class RoomData
     public bool directional;
     public bool random_flip;
     public bool random_rotate;
+    public string rarity = "common";
     public List<RoomObjectData> objects;
 }
 
@@ -24,4 +25,5 @@ public class RoomObjectData
     public List<string> unlockers;
     public string target;
     public int rotation;
+    public float spawnChance = 1.0f;
 }

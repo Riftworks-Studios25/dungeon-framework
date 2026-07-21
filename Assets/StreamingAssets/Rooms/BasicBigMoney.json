@@ -1,5 +1,6 @@
 {
     "room_name": "Basic Big Money",
+    "rarity": "rare",
     "objects": [
         {"type": "coin", "x": -6, "y": 6},
         {"type": "coin", "y": 6},

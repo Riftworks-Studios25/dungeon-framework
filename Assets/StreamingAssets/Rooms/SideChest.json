@@ -1,5 +1,6 @@
 {
     "room_name": "Side Chest",
+    "rarity": "uncommon",
     "random_flip": true,
     "directional": true,
     "objects": [

@@ -1,5 +1,6 @@
 {
     "room_name": "Basic Box Bonanza",
+    "rarity": "uncommon",
     "directional": true,
     "objects": [
         {"type": "box"},
