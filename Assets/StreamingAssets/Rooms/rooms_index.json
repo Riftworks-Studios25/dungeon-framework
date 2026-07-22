@@ -6,7 +6,10 @@
         "BasicBigMoney.json",
         "CornerChest.json",
         "HallCoin.json",
+        "SideChest.json",
         "Loop.json",
-        "LoopVault.json"
+        "LoopVault.json",
+        "Turn.json",
+        "HallChest.json"
     ]
 }

@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.IO;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class RoomManager : MonoBehaviour
 {
@@ -128,6 +129,7 @@ public class RoomManager : MonoBehaviour
             
             List<string> triggerableNames = new List<string>();
             List<(GameObject, RoomObjectData)> instantiatedDependents = new List<(GameObject, RoomObjectData)>();
+            List<GameObject> instantiatedObjects = new List<GameObject>();
             // Add objects from JSON data
             foreach(RoomObjectData roomObject in roomMap.objects)
             {   
@@ -151,25 +153,56 @@ public class RoomManager : MonoBehaviour
 
                     newObject.name = roomObject.name;
 
-                    if (roomObject.main_unlocker || roomObject.dependent)
+                    if (roomObject.main_unlocker)
                     {
                         instantiatedDependents.Add((newObject, roomObject));
+                    }
+                    else if (roomObject.dependent)
+                    {
+                        instantiatedDependents.Insert(0, (newObject, roomObject));
+                    }
+                    else
+                    {
+                        instantiatedObjects.Add(newObject);
                     }
                 }
 
             }
             foreach(var (triggerObject, triggerData) in instantiatedDependents)
             {
+                if (!string.IsNullOrEmpty(triggerData.target))
+                {
+                    // Check if the target object actually exists in instantiated objects!
+                    bool targetExists = instantiatedObjects.Any(obj => obj.name == triggerData.target);
+
+                    // If target didn't spawn (e.g. chest3 failed because chest2 failed), skip this lever!
+                    if (!targetExists)
+                    {                        
+                        if (triggerData.unlockers != null)
+                        {
+                            foreach (string unlocker in triggerData.unlockers)
+                            {
+                                Transform otherUnlocker = Room.transform.Find(unlocker);
+                                if (otherUnlocker != null)
+                                {
+                                    Destroy(otherUnlocker.gameObject);
+                                }
+                            }
+                        }
+                        Destroy(triggerObject);
+                        continue; 
+                    }
+                            }
                 UnlockerBehavior behavior = null;
                 if (triggerObject.TryGetComponent<UnlockerBehavior>(out var bh))
                 {
                     behavior = bh;
-                    behavior.unlockerObjects.Add(triggerObject);
                 }
 
                 Transform targetTransform = Room.transform.Find(triggerData.target);
                 if (targetTransform != null)
                 {
+                    instantiatedObjects.Add(triggerObject);
                     if (behavior != null)
                     {
                         behavior.triggerableObject = targetTransform.gameObject;
