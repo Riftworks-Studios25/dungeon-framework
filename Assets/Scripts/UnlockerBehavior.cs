@@ -9,7 +9,7 @@ public class UnlockerBehavior : MonoBehaviour
     public GameObject triggerableObject;
     public Unlocker unlocker;
     public List<GameObject> unlockerObjects;
-    private List<Unlocker> unlockers;
+    private List<Unlocker> unlockers = new List<Unlocker>();
     [SerializeField] public GameObject mainUnlocker;
     public bool unlocked = false;
     public GameObject toggleLight;
@@ -26,15 +26,23 @@ public class UnlockerBehavior : MonoBehaviour
     }
     void Awake()
     {
-        unlocker = Instantiate(unlocker);
-        unlockers = new List<Unlocker>();
+        if (unlocker != null)
+        {
+            unlocker = Instantiate(unlocker);
+        }
     }
     void Start()
     {
+        EvaluateState();
+    }
+    public void InitializeUnlockerReferences()
+    {
+        unlockers.Clear();
+
         foreach (GameObject unl in unlockerObjects)
         {
             UnlockerBehavior unlocker1 = unl.GetComponent<UnlockerBehavior>();
-            if (unlocker1 != null)
+            if (unlocker1 != null && unlocker1.unlocker != null)
             {
                 unlockers.Add(unlocker1.unlocker);
             }
@@ -44,6 +52,8 @@ public class UnlockerBehavior : MonoBehaviour
 
     public void Unlock()
     {
+        EvaluateState();
+
         unlocked = unlockers.All(u => u.IsActive());
 
         TriggerableBehavior triggerable = triggerableObject.GetComponent<TriggerableBehavior>();
@@ -54,6 +64,19 @@ public class UnlockerBehavior : MonoBehaviour
             else if (!unlocked && !triggerable.IsLocked())
                 triggerable.Lock();
             Play();
+        }
+    }
+
+    public void EvaluateState()
+    {
+        InitializeUnlockerReferences();
+
+        unlocked = unlockers.Count > 0 && unlockers.All(u => u != null && u.IsActive());
+
+        if (triggerableObject != null && triggerableObject.TryGetComponent(out TriggerableBehavior triggerable))
+        {
+            if (unlocked) triggerable.Unlock();
+            else triggerable.Lock();
         }
     }
 }

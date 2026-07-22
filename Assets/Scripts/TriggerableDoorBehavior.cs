@@ -10,19 +10,20 @@ public class TriggerableDoorBehavior : TriggerableBehavior
     {
         sr = GetComponent<SpriteRenderer>();
     }
-    public override void Toggle()
+    public override void Unlock()
     {
-        base.Toggle();
+        base.Unlock();
         GetComponent<BoxCollider2D>().enabled = triggerable.IsLocked();
 
         // Change sprite
-        if (triggerable.IsLocked())
-        {
-            sr.sprite = closedSprite;
-        }
-        else
-        {
-            sr.sprite = openSprite;
-        }
+        sr.sprite = openSprite;
+    }
+    public override void Lock()
+    {
+        base.Lock();
+        GetComponent<BoxCollider2D>().enabled = triggerable.IsLocked();
+
+        // Change sprite
+        sr.sprite = closedSprite;
     }
 }

@@ -5,16 +5,13 @@ using UnityEngine;
 public class Unlocker : ScriptableObject
 {
     public bool active = false;
-    public virtual void Toggle()
+    public virtual void Activate()
     {
-        if (active)
-        {
-            active = false;
-        }
-        else
-        {
-            active = true;
-        }
+        active = true;
+    }
+    public virtual void Deactivate()
+    {
+        active = false;
     }
     
     public bool IsActive() => active;

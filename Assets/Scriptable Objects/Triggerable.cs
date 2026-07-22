@@ -7,17 +7,6 @@ using UnityEngine.Timeline;
 public class Triggerable : ScriptableObject
 {
     public bool locked = true;
-    public virtual void Toggle()
-    {
-        if (locked)
-        {
-            locked = false;
-        }
-        else
-        {
-            locked = true;
-        }
-    }
 
     public virtual void Unlock()
     {

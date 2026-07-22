@@ -112,7 +112,6 @@ public class RoomManager : MonoBehaviour
                     newObject.transform.rotation = Quaternion.Euler(0f, 0f, trigger.rotation);
 
                     newObject.name = trigger.name;
-                    newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject);
 
                     newObject.GetComponent<UnlockerBehavior>().triggerableObject = newObject.transform.parent.Find(trigger.target).gameObject;
                     if (trigger.unlockers.Count > 0)
