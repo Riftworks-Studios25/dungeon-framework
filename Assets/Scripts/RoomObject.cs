@@ -69,29 +69,31 @@ public class RoomObject : MonoBehaviour
         GameObject TriggersObject = (GameObject) Instantiate(Triggers, new Vector2(transform.position.x, transform.position.y), Quaternion.identity, parent: this.transform);
         foreach (Transform childTransform in TriggersObject.transform)
         {
-        TriggerCollide triggerCollide = childTransform.GetComponent<TriggerCollide>();
-        triggerCollide.SetParent(gameObject);
-        if (flip)
-        {
-            TriggersObject.transform.localScale = new Vector3(-1, 1, 1);
-            compensateFlip();
-        }
+            TriggerCollide triggerCollide = childTransform.GetComponent<TriggerCollide>();
+            triggerCollide.SetParent(gameObject);
+            if (flip)
+            {
+                TriggersObject.transform.localScale = new Vector3(-1, 1, 1);
+                compensateFlip();
+            }
         }
     }
 
     // Unrotate certain objects
     void compensateRotation(int rotateAmount)
     {
-        foreach(GameObject chest in GetComponentsInChildren<TriggerableChestBehavior>(true).Select(script => script.gameObject).ToArray())
+        var targetObjects = GetComponentsInChildren<TriggerableChestBehavior>(true).Select(a => a.gameObject).Concat(GetComponentsInChildren<LeverBehavior>(true).Select(b => b.gameObject)).Concat(GetComponentsInChildren<ItemBehavior>(true).Select(c => c.gameObject));
+        foreach(GameObject obj in targetObjects)
         {
-            chest.transform.rotation = Quaternion.Euler(0, 0, -rotateAmount);
+            obj.transform.rotation = Quaternion.Euler(0, 0, -rotateAmount);
         }
     }
     void compensateFlip()
     {
-        foreach(GameObject chest in GetComponentsInChildren<TriggerableChestBehavior>(true).Select(script => script.gameObject).ToArray())
+        var targetObjects = GetComponentsInChildren<TriggerableChestBehavior>(true).Select(a => a.gameObject).Concat(GetComponentsInChildren<LeverBehavior>(true).Select(b => b.gameObject)).Concat(GetComponentsInChildren<ItemBehavior>(true).Select(c => c.gameObject));
+        foreach(GameObject obj in targetObjects)
         {
-            chest.transform.rotation = Quaternion.Euler(0, 0, 0);
+            obj.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 }
