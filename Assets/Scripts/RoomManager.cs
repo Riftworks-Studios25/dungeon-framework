@@ -87,7 +87,6 @@ public class RoomManager : MonoBehaviour
                noRooms = true; 
             }
         }
-        Debug.Log(roomChance);
 
         // Choose a random room. If a room has been picked in the last 3 rooms, it cannot be picked
         if (roomList.Count > 0 && !noRooms)

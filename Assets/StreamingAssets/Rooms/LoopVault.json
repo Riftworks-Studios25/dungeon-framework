@@ -1,7 +1,7 @@
 {
     "room_name": "Loop Vault",
     "rarity": "rare",
-
+    "random_rotate": true,
     "objects": [
         {"type": "wall", "x": 5, "scale_y": 11},
         {"type": "wall", "x": -5, "scale_y": 11},
