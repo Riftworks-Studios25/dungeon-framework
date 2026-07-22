@@ -34,18 +34,14 @@ public class TriggerableChestBehavior : TriggerableBehavior
         lootItem.SetActive(false);
     }
 
-    public override void Toggle()
+    public override void Unlock()
     {
-        base.Toggle();
-
-        // Change sprite
-        if (sr.sprite == closedSprite)
+        base.Unlock();
+        
+        sr.sprite = openSprite;
+        if (!inactive)
         {
-            sr.sprite = openSprite;
-            if (!inactive)
-            {
-                lootItem.SetActive(true);
-            }
+            lootItem.SetActive(true);
         }
         else
         {
@@ -58,6 +54,20 @@ public class TriggerableChestBehavior : TriggerableBehavior
             {
                 lootItem.SetActive(false);
             }
+        }
+    }
+    public override void Lock()
+    {
+        base.Lock();
+        
+        sr.sprite = closedSprite;
+        if (lootItem == null || lootItem.GetComponent<ItemBehavior>().inInventory)
+        {
+            inactive = true;
+        }
+        if (!inactive)
+        {
+            lootItem.SetActive(false);
         }
     }
 }

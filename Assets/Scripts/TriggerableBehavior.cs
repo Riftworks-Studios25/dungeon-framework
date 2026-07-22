@@ -8,24 +8,19 @@ public class TriggerableBehavior : MonoBehaviour
     {
         triggerable = triggerable.CreateRuntimeInstance();
     }
-
-    public virtual void Toggle()
-    {
-        triggerable.Toggle();
-    }
     
-    public void Unlock()
+    public virtual void Unlock()
     {
         if (IsLocked())
         {
-            Toggle();
+            triggerable.Unlock();
         }
     }
-    public void Lock()
+    public virtual void Lock()
     {
         if (!IsLocked())
         {
-            Toggle();
+            triggerable.Lock();
         }
     }
 

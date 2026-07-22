@@ -11,7 +11,7 @@ public class LeverBehavior : UnlockerBehavior
         // Ensure we clean up if this object is disabled while subscribed
         if (isSubscribed && activate != null)
         {
-            activate.started -= OnActivate;
+            activate.performed -= OnActivate;
             activate.Disable();
             isSubscribed = false;
         }
@@ -21,7 +21,14 @@ public class LeverBehavior : UnlockerBehavior
     {
         if (playerInRange)
         {
-            unlocker.Toggle();
+            if (unlocker.IsActive())
+            {
+                unlocker.Deactivate();
+            }
+            else
+            {
+                unlocker.Activate();
+            }
             transform.Rotate(new Vector3(0, 180, 0));
             toggleLight.GetComponent<ToggleIndicator>().Evaluate(unlocker.IsActive());
 
@@ -38,11 +45,8 @@ public class LeverBehavior : UnlockerBehavior
             if (activate != null && !isSubscribed)
             {
                 activate.Enable();
-                activate.started += OnActivate;
+                activate.performed += OnActivate;
                 isSubscribed = true;
-
-                // Reset the action so it won't trigger immediately
-                activate.ReadValue<float>();
             }
         }
     }
@@ -55,7 +59,7 @@ public class LeverBehavior : UnlockerBehavior
             // Unsubscribe and disable when player leaves range
             if (activate != null && isSubscribed)
             {
-                activate.started -= OnActivate;
+                activate.performed -= OnActivate;
                 activate.Disable();
                 isSubscribed = false;
             }
