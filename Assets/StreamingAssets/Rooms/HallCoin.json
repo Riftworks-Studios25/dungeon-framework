@@ -1,10 +1,11 @@
 {
     "room_name": "Hall Coin",
     "directional": true,
+    "random_flip": true,
     "objects": [
         {"type": "wall", "x": -1.5, "y": 0, "scale_y": 16},
         {"type": "wall", "x": 1.5, "y": 0, "scale_y": 16},
-        {"type": "coin", "x": -5},
+        {"type": "coin", "x": -5, "spawn_chance": 0.6},
         {"type": "coin", "x": 5}
     ]
 }

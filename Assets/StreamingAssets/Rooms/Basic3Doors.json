@@ -1,0 +1,16 @@
+{
+    "room_name": "Basic 3 Doors",
+    "rarity": "uncommon",
+    "directional": true,
+    "objects": [
+        {"type": "box"},
+        {"type": "box", "x": 1.5, "spawn_chance": 0.25},
+        {"type": "box", "x": -1.5, "spawn_chance": 0.25},
+        {"type": "pressure_plate","x": -6, "main_unlocker": true, "target": "door1"},
+        {"type": "pressure_plate","y": 6, "main_unlocker": true, "target": "door2"},
+        {"type": "pressure_plate","x": 6, "main_unlocker": true, "target": "door3"},
+        {"type": "door", "name": "door1", "rotation": -90, "x": -8.5},
+        {"type": "door", "name": "door2", "rotation": 180, "y": 8.5},
+        {"type": "door", "name": "door3", "rotation": 90, "x": 8.5}
+    ]
+}

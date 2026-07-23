@@ -13,7 +13,7 @@
         {"type": "pressure_plate", "x": 6, "main_unlocker": true, "target": "chest2"},
         {"type": "door", "name": "door1", "x": 1.5, "rotation": -90},
         {"type": "door", "name": "door2", "x": -1.5, "rotation": 90},
-        {"type": "lever", "x": 2.033, "y": -1.75, "rotation": -90, "target": "door1", "main_unlocker": true},
-        {"type": "lever", "x": -2.033, "y": -1.75, "rotation": 90, "target": "door2", "main_unlocker": true}
+        {"type": "lever", "x": 2.033, "y": -1.75, "rotation": -90, "target": "door1", "main_unlocker": true, "rotate_fix": false},
+        {"type": "lever", "x": -2.033, "y": -1.75, "rotation": 90, "target": "door2", "main_unlocker": true, "rotate_fix": false}
     ]
 }

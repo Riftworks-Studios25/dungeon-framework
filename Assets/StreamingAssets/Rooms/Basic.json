@@ -2,6 +2,7 @@
     "room_name": "Basic",
     "objects": [
         {"type": "coin", "spawn_chance": 0.1},
+        {"type": "coin", "spawn_chance": 0.001, "scale_x": 16, "scale_y": 16},
         {"type": "box", "spawn_chance": 0.2}
     ]
 }

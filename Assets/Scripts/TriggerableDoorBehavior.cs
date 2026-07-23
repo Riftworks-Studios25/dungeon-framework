@@ -6,7 +6,7 @@ public class TriggerableDoorBehavior : TriggerableBehavior
     [SerializeField] public Sprite closedSprite;
     [SerializeField] public Sprite openSprite;
     private SpriteRenderer sr;
-    void Start()
+    void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
     }

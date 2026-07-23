@@ -132,49 +132,59 @@ public class RoomManager : MonoBehaviour
             // Add objects from JSON data
             foreach(RoomObjectData roomObject in roomMap.objects)
             {   
-                bool spawn = true;
                 if (roomObject.spawn_chance < 1.0f && !roomObject.main_unlocker && !roomObject.dependent)
                 {
                     float objectChance = Random.Range(0f, 1f);
                     if (objectChance >= roomObject.spawn_chance)
                     {
-                        spawn = false;
+                        continue;
                     }
                 }
                 
-                if (spawn)
+                Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
+                GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
+                newObject.transform.position = objectVector;
+                newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
+                newObject.transform.localScale = new Vector3(roomObject.scale_x, roomObject.scale_y, 1);
+
+                newObject.name = roomObject.name;
+
+                if (!roomObject.rotate_fix)
                 {
-                    Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
-                    GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
-                    newObject.transform.position = objectVector;
-                    newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
-                    newObject.transform.localScale = new Vector3(roomObject.scale_x, roomObject.scale_y, 1);
+                    if (newObject.TryGetComponent(out IRotateFixable rotFix))
+                    {
+                        rotFix.rotateFix = false;
+                    }
+                }
 
-                    newObject.name = roomObject.name;
-
-                    if (roomObject.main_unlocker)
-                    {
-                        instantiatedDependents.Add((newObject, roomObject));
-                    }
-                    else if (roomObject.dependent)
-                    {
-                        instantiatedDependents.Insert(0, (newObject, roomObject));
-                    }
-                    else
-                    {
-                        instantiatedObjects.Add(newObject);
-                    }
+                if (roomObject.main_unlocker)
+                {
+                    instantiatedDependents.Add((newObject, roomObject));
+                }
+                else if (roomObject.dependent)
+                {
+                    instantiatedDependents.Insert(0, (newObject, roomObject));
+                }
+                else
+                {
+                    instantiatedObjects.Add(newObject);
                 }
 
             }
             foreach(var (triggerObject, triggerData) in instantiatedDependents)
             {
+                if (triggerData.spawn_chance < 1.0f)
+                {
+                    float objectChance = Random.Range(0f, 1f);
+                    if (objectChance >= triggerData.spawn_chance)
+                    {
+                        Destroy(triggerObject);
+                    }
+                }
                 if (!string.IsNullOrEmpty(triggerData.target))
                 {
-                    // Check if the target object actually exists in instantiated objects!
                     bool targetExists = instantiatedObjects.Any(obj => obj.name == triggerData.target);
 
-                    // If target didn't spawn (e.g. chest3 failed because chest2 failed), skip this lever!
                     if (!targetExists)
                     {                        
                         if (triggerData.unlockers != null)
