@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TriggerableChestBehavior : TriggerableBehavior
+public class TriggerableChestBehavior : TriggerableBehavior, IRotateFixable
 {
     public Sprite closedSprite;
     public Sprite openSprite;
@@ -10,6 +10,7 @@ public class TriggerableChestBehavior : TriggerableBehavior
     private GameObject loot;
     private GameObject lootItem;
     private bool inactive = false;
+    public bool rotateFix { get; set; } = true;
 
     void Awake()
     {

@@ -22,4 +22,5 @@ public class RoomObjectData
     public List<string> unlockers;
     public string target;
     public int rotation;
+    public bool rotate_fix = true;
 }

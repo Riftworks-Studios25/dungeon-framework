@@ -98,6 +98,15 @@ public class RoomManager : MonoBehaviour
                     newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
 
                     newObject.name = roomObject.name;
+
+                    if (!roomObject.rotate_fix)
+                    {
+                        if (newObject.TryGetComponent(out IRotateFixable rotFix))
+                        {
+                            rotFix.rotateFix = false;
+                        }
+
+                    }
                 }
 
             }
@@ -112,6 +121,15 @@ public class RoomManager : MonoBehaviour
                     newObject.transform.rotation = Quaternion.Euler(0f, 0f, trigger.rotation);
 
                     newObject.name = trigger.name;
+
+                    if (!trigger.rotate_fix)
+                    {
+                        if (newObject.TryGetComponent(out IRotateFixable rotFix))
+                        {
+                            rotFix.rotateFix = false;
+                        }
+
+                    }
 
                     newObject.GetComponent<UnlockerBehavior>().triggerableObject = newObject.transform.parent.Find(trigger.target).gameObject;
                     if (trigger.unlockers.Count > 0)

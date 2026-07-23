@@ -85,7 +85,10 @@ public class RoomObject : MonoBehaviour
         var targetObjects = GetComponentsInChildren<TriggerableChestBehavior>(true).Select(a => a.gameObject).Concat(GetComponentsInChildren<LeverBehavior>(true).Select(b => b.gameObject)).Concat(GetComponentsInChildren<ItemBehavior>(true).Select(c => c.gameObject));
         foreach(GameObject obj in targetObjects)
         {
-            obj.transform.rotation = Quaternion.Euler(0, 0, -rotateAmount);
+            if (obj.GetComponent<IRotateFixable>().rotateFix)
+            {
+                obj.transform.rotation = Quaternion.Euler(0, 0, -rotateAmount);
+            }
         }
     }
     void compensateFlip()
@@ -93,7 +96,10 @@ public class RoomObject : MonoBehaviour
         var targetObjects = GetComponentsInChildren<TriggerableChestBehavior>(true).Select(a => a.gameObject).Concat(GetComponentsInChildren<LeverBehavior>(true).Select(b => b.gameObject)).Concat(GetComponentsInChildren<ItemBehavior>(true).Select(c => c.gameObject));
         foreach(GameObject obj in targetObjects)
         {
-            obj.transform.rotation = Quaternion.Euler(0, 0, 0);
+            if (obj.GetComponent<IRotateFixable>().rotateFix)
+            {
+                obj.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
         }
     }
 }
