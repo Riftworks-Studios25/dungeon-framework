@@ -27,4 +27,5 @@ public class RoomObjectData
     public string target;
     public int rotation;
     public float spawn_chance = 1.0f;
+    public bool rotate_fix = true;
 }

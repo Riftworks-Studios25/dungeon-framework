@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class ItemBehavior : MonoBehaviour
+public class ItemBehavior : MonoBehaviour, IRotateFixable
 {
     [SerializeField] Item item;
     public bool inInventory = false;
@@ -13,6 +13,7 @@ public class ItemBehavior : MonoBehaviour
     public int stackCount = 1;
     private PlayerInventory playerInventory;
     [SerializeField] public TMP_Text text;
+    public bool rotateFix { get; set; } = true;
     void Start()
     {
         item = Instantiate(item);

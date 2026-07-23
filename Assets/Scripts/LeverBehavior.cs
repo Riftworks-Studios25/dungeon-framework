@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class LeverBehavior : UnlockerBehavior
+public class LeverBehavior : UnlockerBehavior, IRotateFixable
 {
     private bool playerInRange = false;
     private bool isSubscribed = false;
     public InputAction activate;
+    public bool rotateFix { get; set; } = true;
     private void OnDisable()
     {
         // Ensure we clean up if this object is disabled while subscribed

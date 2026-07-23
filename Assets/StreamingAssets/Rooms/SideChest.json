@@ -7,7 +7,7 @@
         {"type": "chest", "name": "chest1", "x": 5, "y": -5},
         {"type": "pressure_plate", "x": 5, "y": -6.2, "main_unlocker": true, "target": "chest1"},
         {"type": "door", "name": "door1", "y": -3},
-        {"type": "lever", "x": 1.75, "y": -2.47, "main_unlocker": true, "target": "door1"},
+        {"type": "lever", "x": 1.75, "y": -2.47, "main_unlocker": true, "target": "door1", "rotate_fix": false},
         {"type": "wall", "x": 5, "y": -3, "scale_x": 8},
         {"type": "wall", "x": -5, "y": -3, "scale_x": 8}
     ]
