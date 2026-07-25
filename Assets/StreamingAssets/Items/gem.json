@@ -1,0 +1,6 @@
+{
+    "item_name": "Gem",
+    "sprite_filename": "gem_sprites.json",
+    "value": 2,
+    "stackable": false
+}

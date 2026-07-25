@@ -1,8 +1,8 @@
 [System.Serializable]
 public class ItemData
 {
-    public string item_name;
+    public string item_name = "item";
     public string sprite_filename;
-    public int value;
-    public bool stackable;
+    public int value = 1;
+    public bool stackable = true;
 }

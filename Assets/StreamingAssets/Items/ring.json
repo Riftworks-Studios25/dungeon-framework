@@ -1,5 +1,5 @@
 {
-    "name": "Ring",
+    "item_name": "Ring",
     "sprite_filename": "ruby_ring.png",
     "value": 3,
     "stackable": false

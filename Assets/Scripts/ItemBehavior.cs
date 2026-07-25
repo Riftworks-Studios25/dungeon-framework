@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class ItemBehavior : MonoBehaviour, IRotateFixable
 {
-    [SerializeField] Item item;
+    public string itemName;
+    public int value;
+    public bool stackable;
     public bool inInventory = false;
     public InputAction pickup;
     private bool playerInRange = false;
@@ -16,17 +18,11 @@ public class ItemBehavior : MonoBehaviour, IRotateFixable
     public bool rotateFix { get; set; } = true;
     void Start()
     {
-        item = Instantiate(item);
         playerInventory = FindAnyObjectByType<PlayerInventory>();
 
         if (text != null ) {text.text = "" + stackCount;}
 
         pickup.Enable();
-    }
-
-    public void Use()
-    {
-        item.Use();
     }
 
         void Update()
@@ -86,7 +82,7 @@ public class ItemBehavior : MonoBehaviour, IRotateFixable
         }
     }
 
-    public int GetItemWorth() => item.GetItemWorth();
-    public bool IsStackable() => item.IsStackable();
-    public String GetName() => item.GetName();
+    public int GetItemWorth() => value;
+    public bool IsStackable() => stackable;
+    public string GetName() => itemName;
 }

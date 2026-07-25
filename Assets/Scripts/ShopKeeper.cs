@@ -6,9 +6,18 @@ public class ShopKeeper : MonoBehaviour
     public YesNoUI ui;
     private string questionText;
     private bool active = true;
-    public GameObject coin;
     private readonly PlayerInventory inv;
+    [SerializeField] LootGenerator lootGenerator;
 
+    void Start()
+    {
+        GameObject gameManager = GameObject.FindGameObjectWithTag("GameManager");
+
+        if (gameManager != null)
+        {
+            lootGenerator = gameManager.GetComponent<LootGenerator>();
+        }
+    }
     void OnTriggerExit2D(Collider2D collision)
     {
         active = true;
@@ -19,7 +28,7 @@ public class ShopKeeper : MonoBehaviour
         int coinCount = inv.GetPlayerWorth();
         if (coinCount > 0)
         {
-            GameObject newCoin = Instantiate(coin);
+            GameObject newCoin = lootGenerator.GetItem("coin");
             newCoin.GetComponent<ItemBehavior>().stackCount = coinCount;
             inv.Wipe();
             inv.PickupItem(newCoin);

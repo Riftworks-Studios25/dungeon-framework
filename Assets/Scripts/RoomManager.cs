@@ -20,6 +20,7 @@ public class RoomManager : MonoBehaviour
     List<RoomData> roomList = new List<RoomData>();
     public List<RoomPrefabMapping> prefabMappings = new List<RoomPrefabMapping>();
     [SerializeField] public GameObject baseRoomPrefab;
+    LootGenerator lootGenerator;
     void Start()
     {
         Random.InitState((int)System.DateTime.Now.Ticks);
@@ -27,6 +28,7 @@ public class RoomManager : MonoBehaviour
         currentRoom = GameObject.FindGameObjectWithTag("Room");
         cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SmoothCameraFollow>();
         player = GameObject.FindGameObjectWithTag("Player");
+        lootGenerator = gameObject.GetComponent<LootGenerator>();
         
         StartCoroutine(LoadAllRooms());
     }
@@ -112,19 +114,12 @@ public class RoomManager : MonoBehaviour
                 }
                 previousRooms.Remove(previousRooms[0]);
             }
-            if (roomMap.directional)
-            {
-                Room.GetComponent<RoomObject>().directional = true;
-            }
-            if (roomMap.random_flip)
-            {
-                Room.GetComponent<RoomObject>().randomFlip = true;
-            }
-            if (roomMap.random_rotate)
-            {
-                Room.GetComponent<RoomObject>().randomRotate = true;
-            }
-            Room.GetComponent<RoomObject>().rarity = roomMap.rarity;
+            var roomObj = Room.GetComponent<RoomObject>();
+            
+            roomObj.directional = roomMap.directional;
+            roomObj.randomFlip = roomMap.random_flip;
+            roomObj.randomRotate = roomMap.random_rotate;
+            roomObj.rarity = roomMap.rarity;
             
             List<string> triggerableNames = new List<string>();
             List<(GameObject, RoomObjectData)> instantiatedDependents = new List<(GameObject, RoomObjectData)>();
@@ -142,7 +137,7 @@ public class RoomManager : MonoBehaviour
                 }
                 
                 Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
-                GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
+                GameObject newObject = GetPrefabByType(roomObject.type, Room);
                 newObject.transform.position = objectVector;
                 newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
                 newObject.transform.localScale = new Vector3(roomObject.scale_x, roomObject.scale_y, 1);
@@ -243,17 +238,21 @@ public class RoomManager : MonoBehaviour
         return Room;
     }
 
-    public GameObject GetPrefabByType(string typeName)
+    public GameObject GetPrefabByType(string typeName, GameObject parentRoom)
     {
         foreach(RoomPrefabMapping mapping in prefabMappings)
         {
             if (mapping.key == typeName)
             {
-                return mapping.prefab;
+                return Instantiate(mapping.prefab, parentRoom.transform);
             }
         }
-        Debug.LogWarning($"Warning: No prefab mapped for key: [{typeName}]");
-        return null;
+        GameObject item = lootGenerator.GetItem(typeName, parentRoom);
+        if (item == null)
+        {
+            Debug.LogWarning($"Warning: No prefab or item mapped for key: [{typeName}]");
+        }
+        return item;
     }
     IEnumerator LoadAllRooms()
     {

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3571347728231372045}
   - component: {fileID: 321595717784715256}
   m_Layer: 0
-  m_Name: Coin
+  m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbd405b8086efa347adfe32af395f61a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemBehavior
-  item: {fileID: 11400000, guid: 43ce82e69990db042b5243e804a2f9be, type: 2}
+  itemName: 
+  value: 0
+  stackable: 0
   inInventory: 0
   pickup:
     m_Name: Pickup

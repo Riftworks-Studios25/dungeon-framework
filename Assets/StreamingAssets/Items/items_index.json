@@ -1,5 +1,7 @@
 {
     "filenames": [
+        "coin.json",
+        "gem.json",
         "ring.json"
     ]
 }
