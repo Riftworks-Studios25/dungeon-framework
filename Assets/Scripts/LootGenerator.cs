@@ -6,6 +6,9 @@ using System.IO;
 using UnityEngine.Networking;
 using System.Linq;
 using System;
+using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using Random = UnityEngine.Random; 
 
 
@@ -63,45 +66,116 @@ public class LootGenerator : MonoBehaviour
         itemBeh.itemName = itemData.item_name;
         itemBeh.value = itemData.value;
         itemBeh.stackable = itemData.stackable;
+        string indexPath = "";
+        if (itemData.random_sprite)
+        {
+            indexPath = $"{Application.streamingAssetsPath}/Items/Sprites/{itemData.sprite_filename}";
+            StartCoroutine(RandomSprite(indexPath, (returnedPath) =>
+            {
+                indexPath = $"{Application.streamingAssetsPath}/Items/Sprites/{returnedPath}";
+                StartCoroutine(GetSprite(indexPath, item));
+            }));
+        }
+        else
+        {
+            indexPath = $"{Application.streamingAssetsPath}/Items/Sprites/{itemData.sprite_filename}";
+            StartCoroutine(GetSprite(indexPath, item));
+        }
     }
 
     IEnumerator LoadAllItems()
     {
         string indexPath = $"{Application.streamingAssetsPath}/Items/items_index.json";
-        
-        using (UnityWebRequest request = UnityWebRequest.Get(indexPath))
+
+        using UnityWebRequest request = UnityWebRequest.Get(indexPath);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
         {
-            yield return request.SendWebRequest();
+            Debug.LogError($"Failed to load item index: {request.error}");
+            yield break;
+        }
 
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError($"Failed to load item index: {request.error}");
-                yield break;
-            }
+        string rawIndexText = request.downloadHandler.text;
 
-            string rawIndexText = request.downloadHandler.text;
-            
-            IndexData indexData = JsonUtility.FromJson<IndexData>(rawIndexText);
-            foreach (string fileName in indexData.filenames)
+        IndexData indexData = JsonUtility.FromJson<IndexData>(rawIndexText);
+        foreach (string fileName in indexData.filenames)
+        {
+            string itemPath = $"{Application.streamingAssetsPath}/Items/{fileName}";
+
+            using (UnityWebRequest itemRequest = UnityWebRequest.Get(itemPath))
             {
-                string itemPath = $"{Application.streamingAssetsPath}/Items/{fileName}";
-                
-                using (UnityWebRequest itemRequest = UnityWebRequest.Get(itemPath))
+                yield return itemRequest.SendWebRequest();
+
+                if (itemRequest.result != UnityWebRequest.Result.Success)
                 {
-                    yield return itemRequest.SendWebRequest();
-
-                    if (itemRequest.result != UnityWebRequest.Result.Success)
-                    {
-                        Debug.LogWarning($"Skipped item file '{fileName}': {itemRequest.error}");
-                        continue;
-                    }
-
-                    string rawItemText = itemRequest.downloadHandler.text;
-                    ItemData itemData = JsonUtility.FromJson<ItemData>(rawItemText);
-
-                    itemList.Add(itemData);
+                    Debug.LogWarning($"Skipped item file '{fileName}': {itemRequest.error}");
+                    continue;
                 }
+
+                string rawItemText = itemRequest.downloadHandler.text;
+                ItemData itemData = JsonUtility.FromJson<ItemData>(rawItemText);
+
+                itemList.Add(itemData);
             }
         }
+    }
+
+    IEnumerator GetSprite(string indexPath, GameObject item)
+    {
+        using UnityWebRequest request = UnityWebRequestTexture.GetTexture(indexPath);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Failed to load: " + request.error + "from " + indexPath);
+        }
+
+        byte[] rawData = request.downloadHandler.data;
+        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+
+        if (tex.LoadImage(rawData))
+        {
+            tex.filterMode = FilterMode.Point;
+            tex.wrapMode = TextureWrapMode.Clamp;
+            Sprite fromTex = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f, 0, SpriteMeshType.Tight);
+            
+            item.GetComponent<SpriteRenderer>().sprite = fromTex;
+            item.GetComponent<Image>().sprite = fromTex;
+        }
+        else
+        {            
+            Debug.LogError($"Failed to load texture at path: {indexPath}");
+            Addressables.LoadAssetAsync<Sprite>("Assets/Sprites/missing_texture.png").Completed += (handle) =>
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    item.GetComponent<SpriteRenderer>().sprite = handle.Result;
+                    item.GetComponent<Image>().sprite = handle.Result;
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load the missing texture sprite. We're cooked.");
+                }
+            };
+            
+        }
+    }
+
+    IEnumerator RandomSprite(string indexPath, System.Action<string> callback)
+    {
+        using UnityWebRequest request = UnityWebRequest.Get(indexPath);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"Failed to load item index: {request.error}");
+            yield break;
+        }
+
+        string rawIndexText = request.downloadHandler.text;
+
+        IndexData indexData = JsonUtility.FromJson<IndexData>(rawIndexText);
+        callback?.Invoke(indexData.filenames[Random.Range(0, indexData.filenames.Count)]);
     }
 }

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 713381d1f1c0cc14ca8667c4134215bc
+guid: 4d4179dfcdba7764b86b0ef40f30d33b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2940802700346798059
-    second: purple_gem_0
+      213: 8096844911359267269
+    second: missing_texture_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: purple_gem_0
+      name: missing_texture_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 3
-        width: 14
-        height: 10
+        x: 0
+        y: 0
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 510d15b668b2037d0800000000000000
-      internalID: -2940802700346798059
+      spriteID: 5c19ff64c85cd5070800000000000000
+      internalID: 8096844911359267269
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      purple_gem_0: -2940802700346798059
+      missing_texture_0: 8096844911359267269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
