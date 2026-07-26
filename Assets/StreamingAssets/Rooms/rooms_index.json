@@ -1,17 +1,6 @@
 {
     "filenames": [
-        "Basic.json",
-	    "Basic3Doors.json",
-        "BasicBigMoney.json",
-        "BasicBoxBonanza.json",
-        "BasicChest.json",
-        "CornerChest.json",
-        "HallChest.json",
-        "HallCoin.json",
-        "Loop.json",
-        "LoopVault.json",
-        "Turn.json",
-        "T.json",
-        "TChest.json"
+
+        "BasicBoxBonanza.json"
     ]
 }

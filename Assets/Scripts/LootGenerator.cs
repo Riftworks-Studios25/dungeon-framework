@@ -140,8 +140,11 @@ public class LootGenerator : MonoBehaviour
             tex.wrapMode = TextureWrapMode.Clamp;
             Sprite fromTex = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f, 0, SpriteMeshType.Tight);
             
-            item.GetComponent<SpriteRenderer>().sprite = fromTex;
-            item.GetComponent<Image>().sprite = fromTex;
+            if (item != null)
+            {
+                item.GetComponent<SpriteRenderer>().sprite = fromTex;
+                item.GetComponent<Image>().sprite = fromTex;
+            }
         }
         else
         {            
