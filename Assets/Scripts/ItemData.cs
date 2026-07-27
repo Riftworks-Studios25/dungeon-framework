@@ -6,4 +6,5 @@ public class ItemData
     public string sprite_filename;
     public int value = 1;
     public bool stackable = true;
+    public float pixels_per_unit = 16f;
 }

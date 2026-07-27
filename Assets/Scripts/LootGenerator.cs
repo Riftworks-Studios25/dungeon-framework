@@ -73,13 +73,13 @@ public class LootGenerator : MonoBehaviour
             StartCoroutine(RandomSprite(indexPath, (returnedPath) =>
             {
                 indexPath = $"{Application.streamingAssetsPath}/Items/Sprites/{returnedPath}";
-                StartCoroutine(GetSprite(indexPath, item));
+                StartCoroutine(GetSprite(indexPath, item, itemData));
             }));
         }
         else
         {
             indexPath = $"{Application.streamingAssetsPath}/Items/Sprites/{itemData.sprite_filename}";
-            StartCoroutine(GetSprite(indexPath, item));
+            StartCoroutine(GetSprite(indexPath, item, itemData));
         }
     }
 
@@ -121,7 +121,7 @@ public class LootGenerator : MonoBehaviour
         }
     }
 
-    IEnumerator GetSprite(string indexPath, GameObject item)
+    IEnumerator GetSprite(string indexPath, GameObject item, ItemData itemData)
     {
         using UnityWebRequest request = UnityWebRequestTexture.GetTexture(indexPath);
         yield return request.SendWebRequest();
@@ -138,7 +138,7 @@ public class LootGenerator : MonoBehaviour
         {
             tex.filterMode = FilterMode.Point;
             tex.wrapMode = TextureWrapMode.Clamp;
-            Sprite fromTex = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 16f, 0, SpriteMeshType.Tight);
+            Sprite fromTex = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), itemData.pixels_per_unit, 0, SpriteMeshType.Tight);
             
             if (item != null)
             {
@@ -179,6 +179,13 @@ public class LootGenerator : MonoBehaviour
         string rawIndexText = request.downloadHandler.text;
 
         IndexData indexData = JsonUtility.FromJson<IndexData>(rawIndexText);
-        callback?.Invoke(indexData.filenames[Random.Range(0, indexData.filenames.Count)]);
+        if (indexData.filenames.Count > 0)
+        {
+            callback?.Invoke(indexData.filenames[Random.Range(0, indexData.filenames.Count)]);
+        }
+        else
+        {
+            callback?.Invoke("null");
+        }
     }
 }

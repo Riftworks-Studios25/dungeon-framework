@@ -1,6 +1,7 @@
 {
     "item_name": "Ring",
-    "sprite_filename": "red_ring.png",
+    "random_sprite": true,
+    "sprite_filename": "ring_sprites.json",
     "value": 3,
     "stackable": false
 }
