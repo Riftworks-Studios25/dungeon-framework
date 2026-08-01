@@ -45,7 +45,7 @@ Explore randomly generated rooms, solve puzzles, collect valuable loot, and esca
 ## Asset Attributions & Credits
 
 * **Ambient Synth and Guitar** by Pioter_m — [Freesound](https://freesound.org/s/718336/) (License: CC BY 4.0)
-* **Click Sound** by *lebaston100* — [Freesound](https://freesound.org/s/192272/) (License: CC BY 4.0 — Pitch, volume, and trim adjusted)
+* **Click Sound** by lebaston100 — [Freesound](https://freesound.org/s/192272/) (License: CC BY 4.0 — Pitch, volume, and trim adjusted)
 * **Train Connect 1.wav** by esperar — [Freesound](https://freesound.org/s/170801/) (License: CC0 1.0 — Pitch, volume, and trim adjusted)
 
 ---
