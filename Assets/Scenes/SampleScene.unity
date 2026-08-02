@@ -957,6 +957,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4109762902803012807, guid: 574e52bbc1f533143915014a70720535, type: 3}
+      propertyPath: extraSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5079920150355972744, guid: 574e52bbc1f533143915014a70720535, type: 3}
       propertyPath: m_Name
       value: Sprite
@@ -964,6 +968,10 @@ PrefabInstance:
     - target: {fileID: 6038040166655303564, guid: 574e52bbc1f533143915014a70720535, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 6413099568046879634, guid: 574e52bbc1f533143915014a70720535, type: 3}
+      propertyPath: inventorySize
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8491590293475600640, guid: 574e52bbc1f533143915014a70720535, type: 3}
       propertyPath: m_Sprite
@@ -1253,7 +1261,7 @@ PrefabInstance:
       objectReference: {fileID: 6206544769134570994, guid: b2922e90c0110f447bd41b82b8faab09, type: 3}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.size
-      value: 9
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[0].key
@@ -1277,15 +1285,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[5].key
-      value: vert_half_wall
+      value: wall
       objectReference: {fileID: 0}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[6].key
-      value: hor_half_wall
+      value: coin
       objectReference: {fileID: 0}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[7].key
-      value: cube_wall
+      value: coin
       objectReference: {fileID: 0}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[8].key
@@ -1314,15 +1322,15 @@ PrefabInstance:
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[5].prefab
       value: 
-      objectReference: {fileID: 8163400179797998418, guid: 1974cf2c3e198ef45a0525083ff03042, type: 3}
+      objectReference: {fileID: 329628895290203375, guid: fe29618ecd20ab04d9fcb94f3bc0ffad, type: 3}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[6].prefab
       value: 
-      objectReference: {fileID: 8772242863074520955, guid: 4a32340f42cc7f54ebcc5b6a2597b1a8, type: 3}
+      objectReference: {fileID: 1967654176672662125, guid: 16e44448190301a45bd257b716d76d37, type: 3}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[7].prefab
       value: 
-      objectReference: {fileID: 329628895290203375, guid: fe29618ecd20ab04d9fcb94f3bc0ffad, type: 3}
+      objectReference: {fileID: 1967654176672662125, guid: 16e44448190301a45bd257b716d76d37, type: 3}
     - target: {fileID: 1573778085540706198, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: prefabMappings.Array.data[8].prefab
       value: 
@@ -1334,7 +1342,7 @@ PrefabInstance:
     - target: {fileID: 4884189941860731363, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: baseItemPrefab
       value: 
-      objectReference: {fileID: 3803959100005580313, guid: 41e39c84e670f474081816ac4932a313, type: 3}
+      objectReference: {fileID: 1967654176672662125, guid: 664bf5348eac11b47b60c41f6fb173e8, type: 3}
     - target: {fileID: 6534946076558039854, guid: b621429b77376934c8fc519a61b7dfc0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.47172

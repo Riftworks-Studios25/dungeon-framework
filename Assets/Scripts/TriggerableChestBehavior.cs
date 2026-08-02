@@ -28,8 +28,7 @@ public class TriggerableChestBehavior : TriggerableBehavior, IRotateFixable
     void Start()
     {
         lootGenerator = FindAnyObjectByType<LootGenerator>();
-        loot = lootGenerator.GetItem();
-        lootItem = Instantiate(loot, transform);
+        lootItem = lootGenerator.GetLootItem(gameObject);
         RectTransform rectTransform = lootItem.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = new Vector2(0, 0.2f);
         lootItem.SetActive(false);

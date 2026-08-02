@@ -1,6 +1,7 @@
 {
-    "name": "Ring",
-    "sprite_filename": "ruby_ring.png",
+    "item_name": "Ring",
+    "random_sprite": true,
+    "sprite_filename": "ring_sprites.json",
     "value": 3,
     "stackable": false
 }

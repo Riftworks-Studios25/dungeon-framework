@@ -1,0 +1,11 @@
+{
+    "room_name": "T",
+    "random_flip": true,
+    "random_rotate": true,
+    "objects": [
+        {"type": "door", "name": "door1", "y": -1.5, "rotation": 180},
+        {"type": "lever", "x": 1.75, "y": -2.03, "main_unlocker": true, "target": "door1", "rotate_fix": false, "rotation": 180},
+        {"type": "wall", "x": 5, "y": -1.5, "scale_x": 8},
+        {"type": "wall", "x": -5, "y": -1.5, "scale_x": 8}
+    ]
+}

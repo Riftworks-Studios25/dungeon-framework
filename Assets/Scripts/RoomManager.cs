@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.IO;
 using UnityEngine.Networking;
+using System.Linq;
 
 public class RoomManager : MonoBehaviour
 {
@@ -13,9 +14,13 @@ public class RoomManager : MonoBehaviour
     static public int seed;
     private List<RoomData> previousRooms = new List<RoomData>();
     List<RoomData> roomPool = new List<RoomData>();
+    List<RoomData> commonRooms = new List<RoomData>();
+    List<RoomData> uncommonRooms = new List<RoomData>();
+    List<RoomData> rareRooms = new List<RoomData>();
     List<RoomData> roomList = new List<RoomData>();
     public List<RoomPrefabMapping> prefabMappings = new List<RoomPrefabMapping>();
     [SerializeField] public GameObject baseRoomPrefab;
+    LootGenerator lootGenerator;
     void Start()
     {
         Random.InitState((int)System.DateTime.Now.Ticks);
@@ -23,6 +28,7 @@ public class RoomManager : MonoBehaviour
         currentRoom = GameObject.FindGameObjectWithTag("Room");
         cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SmoothCameraFollow>();
         player = GameObject.FindGameObjectWithTag("Player");
+        lootGenerator = gameObject.GetComponent<LootGenerator>();
         
         StartCoroutine(LoadAllRooms());
     }
@@ -51,111 +57,202 @@ public class RoomManager : MonoBehaviour
     {
         // default to basic room if no rooms (fallback)
         GameObject Room = Instantiate(baseRoomPrefab);
-        // Choose a random room. If a room has been picked in the last 3 rooms, it cannot be picked
-        if (roomPool.Count > 0)
+
+        float roomChance = Random.Range(0f, 1f);
+        bool noRooms = false;
+        RoomData roomMap = null;
+
+        if (roomChance < 0.65f && commonRooms.Count > 0)
         {
-            int roomIndex = Random.Range(0, roomPool.Count);
-            RoomData roomMap = roomPool[roomIndex];
-            List<RoomObjectData> triggerList = new List<RoomObjectData>();
+            roomMap = PickRoom(commonRooms);
+        } 
+        else if (roomChance < 0.90f && uncommonRooms.Count > 0)
+        {
+            roomMap = PickRoom(uncommonRooms);
+        } 
+        else if (rareRooms.Count > 0)
+        {
+            roomMap = PickRoom(rareRooms);
+        }
+        else
+        {
+            if (commonRooms.Count > 0)
+            {
+                roomMap = PickRoom(commonRooms);
+            }
+            else if (uncommonRooms.Count > 0)
+            {
+                roomMap = PickRoom(uncommonRooms);
+            }
+            else
+            {
+               noRooms = true; 
+            }
+        }
+
+        // Choose a random room. If a room has been picked in the last 3 rooms, it cannot be picked
+        if (roomList.Count > 0 && !noRooms)
+        {
 
             // Ban this room for the next 3 rooms, readd the third previous room to the pool
-            if (roomList.Count > 3)
-            {
-                previousRooms.Add(roomPool[roomIndex]);
-                roomPool.Remove(roomPool[roomIndex]);
-            }
             if (previousRooms.Count > 3)
             {
-                roomPool.Add(previousRooms[0]);
+                switch (previousRooms[0].rarity)
+                {
+                    case "common":
+                            commonRooms.Add(previousRooms[0]);
+                            break;
+                        case "uncommon":
+                            uncommonRooms.Add(previousRooms[0]);
+                            break;
+                        case "rare":
+                            rareRooms.Add(previousRooms[0]);
+                            break;
+                        default:
+                            commonRooms.Add(previousRooms[0]);
+                            break;
+                }
                 previousRooms.Remove(previousRooms[0]);
             }
-            if (roomMap.directional)
-            {
-                Room.GetComponent<RoomObject>().directional = true;
-            }
-            if (roomMap.random_flip)
-            {
-                Room.GetComponent<RoomObject>().randomFlip = true;
-            }
-            if (roomMap.random_rotate)
-            {
-                Room.GetComponent<RoomObject>().randomRotate = true;
-            }
-
+            var roomObj = Room.GetComponent<RoomObject>();
+            
+            roomObj.directional = roomMap.directional;
+            roomObj.randomFlip = roomMap.random_flip;
+            roomObj.randomRotate = roomMap.random_rotate;
+            roomObj.rarity = roomMap.rarity;
+            
+            List<string> triggerableNames = new List<string>();
+            List<(GameObject, RoomObjectData)> instantiatedDependents = new List<(GameObject, RoomObjectData)>();
+            List<GameObject> instantiatedObjects = new List<GameObject>();
             // Add objects from JSON data
             foreach(RoomObjectData roomObject in roomMap.objects)
             {   
-                // Save unlockers for after their triggerables have been instantiated
+                if (roomObject.spawn_chance < 1.0f && !roomObject.main_unlocker && !roomObject.dependent)
+                {
+                    float objectChance = Random.Range(0f, 1f);
+                    if (objectChance >= roomObject.spawn_chance)
+                    {
+                        continue;
+                    }
+                }
+                
+                Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
+                GameObject newObject = GetPrefabByType(roomObject.type, Room);
+                newObject.transform.position = objectVector;
+                newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
+                newObject.transform.localScale = new Vector3(roomObject.scale_x, roomObject.scale_y, 1);
+
+                newObject.name = roomObject.name;
+
+                if (!roomObject.rotate_fix)
+                {
+                    if (newObject.TryGetComponent(out IRotateFixable rotFix))
+                    {
+                        rotFix.rotateFix = false;
+                    }
+                }
+
                 if (roomObject.main_unlocker)
                 {
-                    triggerList.Add(roomObject);
+                    instantiatedDependents.Add((newObject, roomObject));
+                }
+                else if (roomObject.dependent)
+                {
+                    instantiatedDependents.Insert(0, (newObject, roomObject));
                 }
                 else
                 {
-                    Vector2 objectVector = new Vector2(roomObject.x, roomObject.y);
-                    GameObject newObject = Instantiate(GetPrefabByType(roomObject.type), Room.transform);
-                    newObject.transform.position = objectVector;
-                    newObject.transform.rotation = Quaternion.Euler(0f, 0f, roomObject.rotation);
-
-                    newObject.name = roomObject.name;
-
-                    if (!roomObject.rotate_fix)
-                    {
-                        if (newObject.TryGetComponent(out IRotateFixable rotFix))
-                        {
-                            rotFix.rotateFix = false;
-                        }
-
-                    }
+                    instantiatedObjects.Add(newObject);
                 }
 
             }
-            // Instantiate unlockers now that their triggerables exist and can be mapped
-            if (triggerList.Count > 0)
+            foreach(var (triggerObject, triggerData) in instantiatedDependents)
             {
-                foreach(RoomObjectData trigger in triggerList)
+                if (triggerData.spawn_chance < 1.0f)
                 {
-                    Vector2 objectVector = new Vector2(trigger.x, trigger.y);
-                    GameObject newObject = Instantiate(GetPrefabByType(trigger.type), Room.transform);
-                    newObject.transform.position = objectVector;
-                    newObject.transform.rotation = Quaternion.Euler(0f, 0f, trigger.rotation);
-
-                    newObject.name = trigger.name;
-
-                    if (!trigger.rotate_fix)
+                    float objectChance = Random.Range(0f, 1f);
+                    if (objectChance >= triggerData.spawn_chance)
                     {
-                        if (newObject.TryGetComponent(out IRotateFixable rotFix))
-                        {
-                            rotFix.rotateFix = false;
-                        }
-
+                        Destroy(triggerObject);
                     }
+                }
+                if (!string.IsNullOrEmpty(triggerData.target))
+                {
+                    bool targetExists = instantiatedObjects.Any(obj => obj.name == triggerData.target);
 
-                    newObject.GetComponent<UnlockerBehavior>().triggerableObject = newObject.transform.parent.Find(trigger.target).gameObject;
-                    if (trigger.unlockers.Count > 0)
+                    if (!targetExists)
+                    {                        
+                        if (triggerData.unlockers != null)
+                        {
+                            foreach (string unlocker in triggerData.unlockers)
+                            {
+                                Transform otherUnlocker = Room.transform.Find(unlocker);
+                                if (otherUnlocker != null)
+                                {
+                                    Destroy(otherUnlocker.gameObject);
+                                }
+                            }
+                        }
+                        Destroy(triggerObject);
+                        continue; 
+                    }
+                            }
+                UnlockerBehavior behavior = null;
+                if (triggerObject.TryGetComponent<UnlockerBehavior>(out var bh))
+                {
+                    behavior = bh;
+                }
+
+                Transform targetTransform = Room.transform.Find(triggerData.target);
+                if (targetTransform != null)
+                {
+                    instantiatedObjects.Add(triggerObject);
+                    if (behavior != null)
                     {
-                        foreach(string unlocker in trigger.unlockers)
+                        behavior.triggerableObject = targetTransform.gameObject;
+
+                        foreach(string unlocker in triggerData.unlockers)
                         {
-                            newObject.GetComponent<UnlockerBehavior>().unlockerObjects.Add(newObject.transform.parent.Find(unlocker).gameObject);
+                            Transform otherUnlocker = Room.transform.Find(unlocker);
+                            if (otherUnlocker != null)
+                            {
+                                behavior.unlockerObjects.Add(otherUnlocker.gameObject);
+                            }
                         }
                     }
+                }
+                else
+                {
+                    foreach(string unlocker in triggerData.unlockers)
+                    {
+                        Transform otherUnlocker = Room.transform.Find(unlocker);
+                        if (otherUnlocker != null)
+                        {
+                            Destroy(otherUnlocker.gameObject);
+                        }
+                    }
+                    Destroy(triggerObject);
                 }
             }
         }
         return Room;
     }
 
-    public GameObject GetPrefabByType(string typeName)
+    public GameObject GetPrefabByType(string typeName, GameObject parentRoom)
     {
         foreach(RoomPrefabMapping mapping in prefabMappings)
         {
             if (mapping.key == typeName)
             {
-                return mapping.prefab;
+                return Instantiate(mapping.prefab, parentRoom.transform);
             }
         }
-        Debug.LogWarning($"Warning: No prefab mapped for key: [{typeName}]");
-        return null;
+        GameObject item = lootGenerator.GetItem(typeName, parentRoom);
+        if (item == null)
+        {
+            Debug.LogWarning($"Warning: No prefab or item mapped for key: [{typeName}]");
+        }
+        return item;
     }
     IEnumerator LoadAllRooms()
     {
@@ -191,11 +288,37 @@ public class RoomManager : MonoBehaviour
                     string rawRoomText = roomRequest.downloadHandler.text;
                     RoomData roomData = JsonUtility.FromJson<RoomData>(rawRoomText);
 
-                    roomPool.Add(roomData);
                     roomList.Add(roomData);
+                    switch (roomData.rarity)
+                    {
+                        case "common":
+                            commonRooms.Add(roomData);
+                            break;
+                        case "uncommon":
+                            uncommonRooms.Add(roomData);
+                            break;
+                        case "rare":
+                            rareRooms.Add(roomData);
+                            break;
+                        default:
+                            commonRooms.Add(roomData);
+                            Debug.LogWarning($"Warning: Invalid rarity '{roomData.rarity}' in room '{roomData.room_name}'");
+                            break;
+                    }
                 }
             }
         }
+    }
+    public RoomData PickRoom(List<RoomData> rooms)
+    {
+        int roomIndex = Random.Range(0, rooms.Count);
+        RoomData roomMap = rooms[roomIndex];
+        if (roomList.Count > 3)
+        {
+            previousRooms.Add(rooms[roomIndex]);
+            rooms.Remove(rooms[roomIndex]);
+        }
+        return roomMap;
     }
 }
 

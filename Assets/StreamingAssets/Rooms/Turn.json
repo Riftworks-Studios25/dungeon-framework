@@ -1,0 +1,11 @@
+{
+    "room_name": "Turn",
+    "random_flip": true,
+    "random_rotate": true,
+    "objects": [
+        {"type": "wall", "x": -1.5, "y": -3, "scale_y": 10},
+        {"type": "wall", "x": 3, "y": 1.5, "scale_x": 10},
+        {"type": "coin", "x": 5, "y": -5, "spawn_chance": 0.3},
+        {"type": "coin", "x": -5, "y": 5, "spawn_chance": 0.3}
+    ]
+}
